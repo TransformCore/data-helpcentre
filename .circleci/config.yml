@@ -1,0 +1,85 @@
+version: 2.1
+
+# orbs:
+#   slack: circleci/slack@3.4.2
+
+jobs:
+  sync:
+    parameters:
+      aws_region:
+        type: string
+        default: 'eu-west-1'
+      arguments:
+        default: ''
+        type: string
+      from:
+        type: string
+      overwrite:
+        default: false
+        type: boolean
+      to:
+        type: string
+
+    docker:
+      - image: circleci/python:buster
+
+    steps:
+      - run:
+          name: Install AWS CLI
+          command: |
+            if [[ $(command -v pip) == "" ]]; then
+              echo "PIP is required to install AWS CLI and is not available."
+              exit 1
+            else
+              if [[ $(command -v sudo) == "" ]]; then
+                echo "SUDO is required to install AWS CLI and is not available."
+                exit 1
+              else
+                if [[ $(command -v aws) == "" ]]; then
+                  sudo pip install awscli
+                else
+                  echo "AWS CLI is already installed."
+                  which aws
+                fi
+              fi
+            fi
+      - run:
+          name: Configure cli credentials
+          command: |
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID --profile default
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile default
+      - run:
+          name: Configure default region
+          command: |
+            aws configure set region << parameters.aws_region >> --profile default
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: s3 sync
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ];
+            then
+              aws s3 sync <<parameters.from>> s3://<<parameters.to>>/<<#parameters.overwrite>> --delete<</parameters.overwrite>><<#parameters.arguments>> \
+              <<parameters.arguments>><</parameters.arguments>>
+            else
+              aws s3 sync <<parameters.from>> s3://<<parameters.to>>/$CIRCLE_BRANCH/$CIRCLE_BUILD_NUM<<#parameters.arguments>> \
+              <<parameters.arguments>><</parameters.arguments>>
+            fi
+
+  # notify:
+  #   docker:
+  #     - image: circleci/python:buster
+  #   steps:
+  #     - slack/notify:
+  #         channel: # channel name
+  #         message: # channel message
+
+workflows:
+  sync_to_s3:
+    jobs:
+      - sync:
+          from: .
+          to: research-ops-static-sites/survey-faq
+          arguments: |
+            --acl public-read
+          overwrite: false
