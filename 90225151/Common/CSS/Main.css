@@ -1,0 +1,130 @@
+* {
+    font-family:arial;
+    }
+    
+    body {
+    overflow-y: scroll;
+    }
+    
+    #wrapper {
+    text-align:center;
+    min-width:944px;
+    width:944px;
+    margin-left: auto;
+    margin-right: auto;
+    }
+    
+    #details {
+    text-align:left;
+    }
+    
+    #details input,textarea {
+    border:none;
+    border-bottom:1px solid #ddd;
+    height:2em;
+    width:100%;
+    }
+    
+    #topbanner {
+    background: #fff url('../images/SpringFields_Logo.jpg') no-repeat center center;
+    height:90px;
+    }
+    
+    #header {
+    font-size:2em;
+    margin-top:1em;
+    margin-bottom:1em;
+    text-align:left;
+    }
+    
+    .content {
+    text-align:left;
+    margin-bottom:1em;
+    }
+    
+    #footer {
+    background: none;
+    }
+    
+    .HelpOption {
+    background:#8093C4;
+    margin-left:0px !important;
+    -webkit-border-radius:0px;
+    -moz-border-radius:0px;
+    border-radius:0px;
+    text-align:left;
+    padding:1em;
+    margin-bottom:0.50em;
+    margin-top:0.50em;
+    color:#fff;
+    }
+    
+    .HelpOption:hover {	
+    background:#8093C4;
+    cursor: pointer;
+    }
+    
+    .email {
+    padding:0.5em;
+    background:#2F3751;
+    text-align:center;
+    color:#fff;
+    margin-bottom:0.50em;
+    margin-top:0.50em;
+    font-size:1.5em;
+    }
+    
+    .email:hover {	
+    background:#3250A0;
+    cursor: pointer;
+    }
+    
+    .fas {
+    font-size:2em;
+    margin-right:0.5em;
+    width:1em;
+    }
+    
+    a {
+    text-decoration:none;
+    color:#fff;
+    }
+    
+    .accordion {
+      background-color: #2F3751;
+      color: #fff;
+      cursor: pointer;
+      padding: 18px;
+      width: 100%;
+      text-align: left;
+      border: none;
+      outline: none;
+      transition: 0.4s;
+      margin-bottom:0.50em;
+    margin-top:0.50em;
+    font-size:1em;
+    }
+    
+    .active, .accordion:hover {
+      background-color: #3250A0;
+    }
+    
+    .panel {
+      padding: 0 18px;
+      background-color: white;
+      display: none;
+      overflow: hidden;
+      text-align:left;
+    } 
+    
+    .highlight {
+    background:#faf096;
+    padding:0.25em;
+    }
+    
+    @media only screen and (max-device-width: 943px) {
+    #wrapper {
+    min-width:100%;
+    width:100%;
+    }
+    }
