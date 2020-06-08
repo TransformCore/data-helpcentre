@@ -1,8 +1,8 @@
-const getParameterByName = name => {
+function getParameterByName(name) {
     let url = window.location.href
     url = url.toLowerCase()
     name = name.toLowerCase(),
-    name = name.replace(/[\[\]]/g, '\\$&');
+        name = name.replace(/[\[\]]/g, '\\$&');
     var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
         results = regex.exec(url);
     if (!results) return '';
@@ -10,19 +10,19 @@ const getParameterByName = name => {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-document.querySelectorAll('.resetLink, .mailTo').forEach(el => {
+document.querySelectorAll('.resetLink, .mailTo').forEach(function (el) {
     newLink = el.getAttribute('href') + getParameterByName('projCode')
     el.setAttribute('href', newLink)
 })
 
 // set up what shows and what doesnt based off stype variable
-const hideElements = classToHide => {
-    document.querySelectorAll(classToHide).forEach(el => {
+function hideElements(classToHide) {
+    document.querySelectorAll(classToHide).forEach(function (el) {
         el.remove();
     })
 }
 
-switch(getParameterByName('stype')) {
+switch (getParameterByName('stype')) {
     case '1':
         break;
     case '2':
