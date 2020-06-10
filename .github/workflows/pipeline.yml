@@ -1,0 +1,97 @@
+name: Deploy to S3
+
+on:
+  push:
+    branches:
+      - master
+
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  lint:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+    name: Lint JS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14"
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint Prettier
+        run: yarn lint:prettier
+
+      - name: Spellcheck
+        run: yarn lint:spellcheck
+
+  validate:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+    name: Validate HTML
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install html5validator
+
+      - name: Run HTML5 Validator
+        run: html5validator --root .
+
+  deploy:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+    name: Upload to S3
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: eu-west-1
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+      name: Copy files to the root of the bucket
+      run: |
+        aws s3 sync . s3://research-ops-static-sites --acl public-read
+        aws s3 sync . s3://research-ops-static-sites/helpcentre --acl public-read
+
+    - if: github.event_name == 'pull_request'
+      name: Copy files of pull request to branch
+      run: |
+        aws s3 sync . s3://research-ops-static-sites/${{ github.head_ref}}/${{ github.event.pull_request.number }} \
+        --acl public-read
+
+    - if: github.event_name == 'pull_request'
+    - name: Comment on PR
+      uses: unsplash/comment-on-pr@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        msg: "Your pull request deployed to https://svy.enginetransformation.com/${{ github.head_ref }}/${{ github.event.pull_request.number }} :tada:"
+        check_for_duplicate_msg: true

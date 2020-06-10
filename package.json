@@ -1,0 +1,17 @@
+{
+  "name": "helpcentre",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "lint:prettier": "prettier \"**/*.{md,json,yml,html,css}\" --check",
+    "lint:spellcheck": "cspell \"**/*\" \".github/**/*\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/et-research-ops/helpcentre.git"
+  },
+  "devDependencies": {
+    "cspell": "^4.0.63",
+    "prettier": "^2.0.5"
+  }
+}
