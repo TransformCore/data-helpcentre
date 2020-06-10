@@ -15,8 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 1
 
@@ -30,9 +29,6 @@ jobs:
 
       - name: Lint Prettier
         run: yarn lint:prettier
-
-      - name: Spellcheck
-        run: yarn lint:spellcheck
 
   validate:
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
@@ -65,33 +61,33 @@ jobs:
       AWS_REGION: eu-west-1
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-    - if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
-      name: Copy files to the root of the bucket
-      run: |
-        aws s3 sync . s3://research-ops-static-sites --acl public-read
-        aws s3 sync . s3://research-ops-static-sites/helpcentre --acl public-read
+      - if: github.ref == 'refs/heads/master'
+        name: Copy files to the root of the bucket
+        run: |
+          aws s3 sync . s3://research-ops-static-sites --acl public-read
+          aws s3 sync . s3://research-ops-static-sites/helpcentre --acl public-read
 
-    - if: github.event_name == 'pull_request'
-      name: Copy files of pull request to branch
-      run: |
-        aws s3 sync . s3://research-ops-static-sites/${{ github.head_ref}}/${{ github.event.pull_request.number }} \
-        --acl public-read
+      - if: github.event_name == 'pull_request'
+        name: Copy files of pull request to branch
+        run: |
+          aws s3 sync . s3://research-ops-static-sites/${{ github.head_ref}}/${{ github.event.pull_request.number }} \
+          --acl public-read
 
-    - if: github.event_name == 'pull_request'
-    - name: Comment on PR
-      uses: unsplash/comment-on-pr@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        msg: "Your pull request deployed to https://svy.enginetransformation.com/${{ github.head_ref }}/${{ github.event.pull_request.number }} :tada:"
-        check_for_duplicate_msg: true
+      - if: success() && github.event_name == 'pull_request'
+        name: Comment on PR
+        uses: unsplash/comment-on-pr@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          msg: "Your pull request has been deployed to S3. You can [view it here](https://svy.enginetransformation.com/${{ github.head_ref }}/${{ github.event.pull_request.number }}/index.html) :tada:"
+          check_for_duplicate_msg: true
