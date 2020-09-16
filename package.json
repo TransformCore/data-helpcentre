@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "clean": "rm -rf ./dist && mkdir -p ./dist/assets",
     "build": "concurrently \"npm run minify:css\" \"npm run minify:js\" \"npm run minify:images\" \"npm run minify:html\" \"npm run minify:clients\" \"npm run minify:overrides\"",
     "lint:prettier": "prettier \"**/*.{md,json,yml,html,css}\" --check",
     "minify:css": "postcss --input assets/css/*.css --output dist/assets/main.min.css",

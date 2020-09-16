@@ -36,15 +36,14 @@ jobs:
       - if: github.ref == 'refs/heads/master'
         name: Copy files to the root of the bucket
         run: |
-          aws s3 sync ./dist s3://research-ops-static-sites --acl public-read --exclude "*.*" --exclude="README.md" --exclude="package.json" --exclude="node_modules/*"
-          aws s3 sync ./dist s3://research-ops-static-sites/helpcentre --acl public-read --exclude "*.*" --exclude "yarn.lock" --exclude="README.md" --exclude="package.json" --exclude="node_modules/*"
+          aws s3 sync ./dist s3://research-ops-static-sites --acl public-read
+          aws s3 sync ./dist s3://research-ops-static-sites/helpcentre --acl public-read
 
       - if: github.event_name == 'pull_request'
         name: Copy files of pull request to branch
         run: |
           aws s3 sync ./dist s3://research-ops-static-sites/${{ github.head_ref}}/${{ github.event.pull_request.number }} \
           --acl public-read \
-          --exclude "*.*" --exclude "yarn.lock" --exclude="README.md" --exclude="package.json" --exclude="node_modules/*"
 
       # - if: success() && github.event_name == 'pull_request'
       #   name: Comment on PR
