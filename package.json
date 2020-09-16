@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "build": "concurrently \"npm run minify:css\" \"npm run minify:js\" \"npm run minify:images\" \"npm run minify:html\" \"npm run minify:clients\" \"npm run minify:overrides\"",
+    "start": "npm run build && serve dist/",
     "lint:prettier": "prettier \"**/*.{md,json,yml,html,css}\" --check",
     "minify:css": "postcss --input assets/css/*.css --output dist/assets/main.min.css",
     "minify:overrides": "for d in clients/*; do postcss \"${d}/client.css\" --output \"dist/$(echo $d | cut -d '/' -f2 -)/client.min.css\"; done",
@@ -24,6 +25,7 @@
     "imagemin-cli": "^6.0.0",
     "postcss-cli": "^7.1.2",
     "prettier": "^2.0.5",
+    "serve": "^11.3.2",
     "terser": "^5.3.1",
     "uglify-js": "^3.10.4"
   }
