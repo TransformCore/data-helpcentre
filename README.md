@@ -1,6 +1,11 @@
 # Helpcentre
 
-## Working Locally
+## Contents
+- [Working Locally](#working-locally)  
+- [Deployment](#deployment)  
+- [Architecture](#architecture)
+
+## Working Locally
 
 ### Dependencies
 
