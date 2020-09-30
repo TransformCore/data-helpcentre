@@ -8,7 +8,7 @@
     "lint:prettier": "prettier \"**/*.{md,json,yml,html,css}\" --check",
     "minify:css": "postcss --input assets/css/*.css --output dist/assets/main.min.css",
     "minify:overrides": "for d in clients/*; do postcss \"${d}/client.css\" --output \"dist/$(echo $d | cut -d '/' -f2 -)/client.min.css\"; done",
-    "minify:js": "mkdir -p dist/assets && terser --compress --output dist/assets/main.min.js -- assets/js/accord.js assets/js/parameters.js assets/js/polyfill.js assets/js/translation.js",
+    "minify:js": "mkdir -p dist/assets && terser --output dist/assets/main.min.js -- assets/js/accord.js assets/js/parameters.js assets/js/polyfill.js assets/js/translation.js",
     "minify:images": "imagemin assets/images/*.{png,jpg,jpeg} --out-dir dist/assets/",
     "minify:html": "html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype index.html -o dist/index.html",
     "minify:clients": "for d in clients/*; do mkdir -p \"dist/$(echo $d | cut -d'/' -f2 -)\" && html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype \"${d}/index.html\" -o \"dist/$(echo $d | cut -d'/' -f2 -)/index.html\" ; done"
