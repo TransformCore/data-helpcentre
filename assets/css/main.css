@@ -29,6 +29,7 @@
     /*background: #fff url('../images/ETLogo.png') no-repeat center center;*/
     /*height:50px;*/
     background: #fff url('Horizontal_Transform_logo_Orange.png') no-repeat center center;
+    background-size: cover; /* Resize the background image to cover the entire container */
     height:90px;
     }
 
